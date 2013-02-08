@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Initialization
+if [ `pwd` != "/usr/local/lib/coral_dev" ]
+then
+  sudo mkdir /usr/local/lib/coral_dev
+  sudo cp -Rf * /usr/local/lib/coral_dev
+fi
+
+# Scripts
+sudo ln -sfn /usr/local/lib/coral_dev/gem.test /usr/local/bin/gem.test
+sudo ln -sfn /usr/local/lib/coral_dev/gem.release /usr/local/bin/gem.release
+sudo ln -sfn /usr/local/lib/coral_dev/gem.patch /usr/local/bin/gem.patch
+sudo ln -sfn /usr/local/lib/coral_dev/gem.minor /usr/local/bin/gem.minor
+sudo ln -sfn /usr/local/lib/coral_dev/gem.major /usr/local/bin/gem.major
+sudo chmod 755 /usr/local/lib/coral_dev/gem.*
+
