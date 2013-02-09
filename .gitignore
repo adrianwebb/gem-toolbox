@@ -1,0 +1,7 @@
+# State file
+.state
+
+# Eclipse IDE files
+.project
+.buildpath
+.cache
