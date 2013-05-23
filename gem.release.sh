@@ -5,7 +5,7 @@ gem.test || exit "$?"
 
 # Install new version
 bundle exec rake version:bump:$1 || exit 10
-sudo bundle exec rake install || exit 11
+bundle exec rake install || exit 11
 
 version=`cat VERSION`
 releases=(${version//\./ })
