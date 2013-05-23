@@ -2,7 +2,6 @@
 require 'rubygems'
 require 'optparse'
 require 'coral_core'
-require 'pp'
 
 #-------------------------------------------------------------------------------
 # Properties
@@ -56,8 +55,9 @@ unless options[:test] || options[:clean]
 
   if File.directory?(install_git) || File.exists?(install_git)
     git = Git.open(install_home)
-  
+
     puts "Pulling updates from #{git.remote('origin').url}"
+    git.checkout('master')
     git.pull('origin', 'master')
     puts ''
   end
