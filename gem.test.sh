@@ -1,18 +1,16 @@
 #!/bin/bash
 
 # Test dependencies
-bundle update || exit 1
-bundle install || exit 2
+bundle install || exit 1
 
 # Unit testing
-bundle exec rake spec || exit 3
+bundle exec rake spec || exit 2
 
 # Install new version
-bundle exec rake install || exit 4
+bundle exec rake install || exit 3
 
 # Generate Gem information
-bundle exec rake gemspec || exit 5
+bundle exec rake gemspec || exit 4
 
 rm *.gem 2>/dev/null
-gem build *.gemspec || exit 6
-exit 0
+gem build *.gemspec || exit 5

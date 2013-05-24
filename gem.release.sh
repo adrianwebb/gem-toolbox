@@ -28,4 +28,3 @@ gem build *.gemspec || exit 17
 
 # Publish Gem version
 gem push *.gem || exit 18
-exit 0
