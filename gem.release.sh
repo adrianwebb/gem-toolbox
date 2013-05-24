@@ -10,7 +10,7 @@ bundle exec rake install || exit 11
 version=`cat VERSION`
 releases=(${version//\./ })
 branch="${releases[0]}.${releases[1]}"
-tag="${version}"
+tag="v${version}"
 
 # Generate Gem information
 bundle exec rake gemspec || exit 12
