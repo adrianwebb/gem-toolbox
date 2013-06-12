@@ -83,7 +83,7 @@ tag="v${version}"
 [ $STATUS -eq 0 ] && git reset || STATUS=30
 
 [ $STATUS -eq 0 ] && git add *.gemspec || STATUS=31
-[ $STATUS -eq 0 ] && git commit -m "Updating gemspec file for ${version} release." || STATUS=32
+[ $STATUS -eq 0 ] && git commit -m "Updating gemspec file for ${version} release."
 
 # Push new release to origin repository
 [ $STATUS -eq 0 ] && git tag "$tag" || STATUS=33
