@@ -1,7 +1,6 @@
-
 require 'rubygems'
 require 'optparse'
-require 'coral_core'
+require 'corl'
 
 #-------------------------------------------------------------------------------
 # Properties
@@ -66,14 +65,14 @@ end
 #---
 
 puts "Loading state"
-state = Coral::Util::Disk.read(state_file)
+state = CORL::Util::Disk.read(state_file)
 puts ''
 
 #-------------------------------------------------------------------------------
 # Remove old scripts
 
 if state
-  state = Coral::Core.symbol_map(JSON.parse(state))
+  state = CORL::Core.symbol_map(JSON.parse(state))
   
   if options[:clean] || ! options[:test]
     state[:bin].each do |file|
@@ -117,7 +116,7 @@ unless options[:clean]
     
       launch_script = "#!/bin/bash\nruby #{file} $@"
     
-      Coral::Util::Disk.write(bin_file, launch_script)
+      CORL::Util::Disk.write(bin_file, launch_script)
       File.chmod(0755, bin_file)
   
       state[:bin] << bin_file
@@ -130,4 +129,4 @@ end
 # Finalization
 
 puts "Saving state"
-Coral::Util::Disk.write(state_file, JSON.generate(state))
+CORL::Util::Disk.write(state_file, JSON.generate(state))
