@@ -1,15 +1,23 @@
 require 'rubygems'
 require 'optparse'
-require 'corl'
+require 'nucleon'
 
 #-------------------------------------------------------------------------------
 # Properties
+#
+# TODO: Utilize Nucleon more effectively
 
 options = {}
 
 opts = OptionParser.new do |opts|
   opts.banner = "Usage: ./install [-tc]"
-  opts.separator "" 
+  opts.separator ""
+  opts.separator "This command installs the Coral toolbox scripts into the directory,"
+  opts.separator "/usr/local/lib/coral_toolbox (unless --test option given)."
+  opts.separator ""
+  opts.separator "The installer also takes care of sym linking the executables to the"
+  opts.separator "/usr/local/bin directory (without the .sh extension)."
+  opts.separator ""
       
   opts.on("-t", "--test", "Run scripts from their local directory") do |t|
     options[:test] = t
@@ -34,8 +42,7 @@ end
 
 current = File.expand_path(File.dirname(__FILE__))
 
-install_home = ( options[:test] ? current : "/usr/local/lib/coral_dev" )
-install_git  = "#{install_home}/.git"
+install_home = ( options[:test] ? current : "/usr/local/lib/coral_toolbox" )
 install_bin  = "/usr/local/bin"
 
 state_file   = "#{install_home}/.state"
@@ -49,30 +56,19 @@ unless options[:test] || options[:clean]
     FileUtils.cp_r(current, install_home)
     puts ''
   end
-
-  #---
-
-  if File.directory?(install_git) || File.exists?(install_git)
-    git = Git.open(install_home)
-
-    puts "Pulling updates from #{git.remote('origin').url}"
-    git.checkout('master')
-    git.pull('origin', 'master')
-    puts ''
-  end
 end
 
 #---
 
 puts "Loading state"
-state = CORL::Util::Disk.read(state_file)
+state = Nucleon::Util::Disk.read(state_file)
 puts ''
 
 #-------------------------------------------------------------------------------
 # Remove old scripts
 
 if state
-  state = CORL::Core.symbol_map(JSON.parse(state))
+  state = Nucleon::Util::Data.symbol_map(Nucleon::Util::Data.parse_json(state))
   
   if options[:clean] || ! options[:test]
     state[:bin].each do |file|
@@ -116,7 +112,7 @@ unless options[:clean]
     
       launch_script = "#!/bin/bash\nruby #{file} $@"
     
-      CORL::Util::Disk.write(bin_file, launch_script)
+      Nucleon::Util::Disk.write(bin_file, launch_script)
       File.chmod(0755, bin_file)
   
       state[:bin] << bin_file
@@ -129,4 +125,4 @@ end
 # Finalization
 
 puts "Saving state"
-CORL::Util::Disk.write(state_file, JSON.generate(state))
+Nucleon::Util::Disk.write(state_file, Nucleon::Util::Data.to_json(state, true))
