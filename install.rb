@@ -1,5 +1,6 @@
-require 'rubygems'
-require 'optparse'
+
+ENV['NUCLEON_NO_PARALLEL'] = '1'
+
 require 'nucleon'
 
 #-------------------------------------------------------------------------------
@@ -51,7 +52,9 @@ state_file   = "#{install_home}/.state"
 # Initialization
 
 unless options[:test] || options[:clean]
-  if current != install_home && ! File.directory?(install_home)
+  if current != install_home
+    FileUtils.rm_rf(install_home) if File.directory?(install_home)
+    
     puts "Installing #{current} to #{install_home}"
     FileUtils.cp_r(current, install_home)
     puts ''
@@ -70,14 +73,13 @@ puts ''
 if state
   state = Nucleon::Util::Data.symbol_map(Nucleon::Util::Data.parse_json(state))
   
-  if options[:clean] || ! options[:test]
+  if options[:clean]
     state[:bin].each do |file|
       puts "Removing: #{file}"
       File.delete(file);
     end
     puts ''
-  end
-  
+  end  
 else
   state = {}
 end
