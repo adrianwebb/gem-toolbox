@@ -82,18 +82,25 @@ tag="v${version}"
 
 [ $STATUS -eq 0 ] && git reset || STATUS=30
 
+# Update gemspec
 [ $STATUS -eq 0 ] && git add *.gemspec || STATUS=31
 [ $STATUS -eq 0 ] && git commit -m "Updating gemspec file for ${version} release."
 
+# Create version documentation
+[ $STATUS -eq 0 ] && bundle exec rake rdoc || STATUS=32
+[ $STATUS -eq 0 ] && git add "rdoc/site/${version}" || STATUS=33
+[ $STATUS -eq 0 ] && git add -u "rdoc/site/${version}" || STATUS=33
+[ $STATUS -eq 0 ] && git commit -m "Adding RDoc documentation site for ${version} release."
+
 # Push new release to origin repository
-[ $STATUS -eq 0 ] && git tag "$tag" || STATUS=33
-[ $STATUS -eq 0 ] && git push --tags origin "$branch" || STATUS=34
+[ $STATUS -eq 0 ] && git tag "$tag" || STATUS=34
+[ $STATUS -eq 0 ] && git push --tags origin "$branch" || STATUS=35
 
 # Build a new gem file
 [ $STATUS -eq 0 ] && rm *.gem 2>/dev/null
-[ $STATUS -eq 0 ] && gem build *.gemspec || STATUS=35
+[ $STATUS -eq 0 ] && gem build *.gemspec || STATUS=36
 
 # Publish Gem version
-[ $STATUS -eq 0 ] && gem push *.gem || STATUS=36
+[ $STATUS -eq 0 ] && gem push *.gem || STATUS=37
 
 exit $STATUS
