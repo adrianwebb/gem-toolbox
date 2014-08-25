@@ -87,10 +87,13 @@ tag="v${version}"
 [ $STATUS -eq 0 ] && git commit -m "Updating gemspec file for ${version} release."
 
 # Create version documentation
-[ $STATUS -eq 0 ] && bundle exec rake rdoc || STATUS=32
-[ $STATUS -eq 0 ] && git add "rdoc/site/${version}" || STATUS=33
-[ $STATUS -eq 0 ] && git add -u "rdoc/site/${version}" || STATUS=33
-[ $STATUS -eq 0 ] && git commit -m "Adding RDoc documentation site for ${version} release."
+if [ -d "rdoc/site/${version}" ]
+then
+  [ $STATUS -eq 0 ] && bundle exec rake rdoc || STATUS=32
+  [ $STATUS -eq 0 ] && git add "rdoc/site/${version}" || STATUS=33
+  [ $STATUS -eq 0 ] && git add -u "rdoc/site/${version}" || STATUS=33
+  [ $STATUS -eq 0 ] && git commit -m "Adding RDoc documentation site for ${version} release."
+fi
 
 # Push new release to origin repository
 [ $STATUS -eq 0 ] && git tag "$tag" || STATUS=34
