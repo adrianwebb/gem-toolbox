@@ -1,0 +1,112 @@
+#!/bin/bash
+#-------------------------------------------------------------------------------
+#
+# cygwin_install
+#
+#-------------------------------------------------------------------------------
+# Help
+
+if [ -z "$HELP" ]
+then
+  export HELP="
+  The cygwin_install command installs the Coral dev tools into a Cygwin environment
+
+  --------------------------------------------------------------------------------
+  Tested under Windows 7 / Cygwin 1.7.32
+  Licensed under GPLv3
+
+  See the project page at: http://github.com/coralnexus/coral-toolbox
+  Report issues here:      http://github.com/coralnexus/coral-toolbox/issues
+  "
+fi
+
+if [ -z "$USAGE" ]
+then
+  export USAGE="
+  usage: cygwin_install  [ -h | --help ]              | Show usage information
+  -------------------------------------------------------------------------------
+                         [ -b | --bin <path/to/bin> ] | Bin directory of dev tools
+                                                      | (default: /usr/local/bin)
+                         [ -l | --lib <path/to/lib> ] | Lib directory of dev tools
+                                                      | (default: /usr/local/lib)
+"
+fi
+
+#-------------------------------------------------------------------------------
+# Parameters
+
+STATUS=0
+SCRIPT_DIR="$(cd "$(dirname "$([ `readlink "$0"` ] && echo "`readlink "$0"`" || echo "$0")")"; pwd -P)" 
+SHELL_LIB_DIR="$SCRIPT_DIR/lib/shell"
+
+source "$SHELL_LIB_DIR/load.sh" || exit 1
+
+#---
+
+PARAMS=`normalize_params "$@"`
+BIN_DIR='/usr/local/bin'
+LIB_DIR='/usr/local/lib'
+
+
+parse_flag '-h|--help' HELP_WANTED
+
+parse_option '-b|--bin' BIN_DIR 'validate_directory' 'BIN directory must be a valid bin directory' || STATUS=2
+parse_option '-l|--lib' LIB_DIR 'validate_directory' 'LIB directory must be an existing directory' || STATUS=3
+
+
+# Standard help message.
+if [ "$HELP_WANTED" ]
+then
+  echo "$HELP"
+  echo "$USAGE"
+  exit 0
+fi
+if [ $STATUS -ne 0 ]
+then
+  echo "$USAGE"
+  exit $STATUS    
+fi
+
+ARGS=`get_args "$PARAMS"`
+INSTALL_DIR="${LIB_DIR}/coral-toolbox"
+
+
+#-------------------------------------------------------------------------------
+# Start
+
+echo "Bin directory     : $BIN_DIR"
+echo "Lib directory     : $LIB_DIR"
+echo "Install directory : $INSTALL_DIR"
+
+cd "$SCRIPT_DIR"
+
+echo "Checking submodules for updates"
+git submodule update --init --recursive || STATUS=5
+
+[ $STATUS -eq 0 ] && echo "Installing to lib directory"
+[ $STATUS -eq 0 ] && rm -Rf "$INSTALL_DIR"
+[ $STATUS -eq 0 ] && cp -Rf "$SCRIPT_DIR" "$INSTALL_DIR" || STATUS=4
+
+if [ $STATUS -eq 0 ]
+then
+  echo "Linking executables"
+
+  for file in "$INSTALL_DIR"/*.sh
+  do
+    bin_file="$BIN_DIR/"`basename "$file"`
+    bin_file=${bin_file%.*}
+    
+    echo "Linking: $file (to: $bin_file)"
+    
+    rm -f "$bin_file"
+    ln -s "$file" "$bin_file" || STATUS=5
+
+    if [ $STATUS -ne 0 ]
+    then
+      echo "Failed to successfully link file"
+      exit $STATUS
+    fi
+  done
+fi
+
+exit $STATUS
