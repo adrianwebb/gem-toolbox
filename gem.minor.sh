@@ -15,11 +15,11 @@ to prepare for release to RubyGems and the origin repository.
 New version -> major.minor+1.patch
 
 --------------------------------------------------------------------------------
-Tested under Ubuntu 12.04 LTS
+Tested under Ubuntu 12.04 LTS, 14.04 LTS
 Licensed under GPLv3
 
-See the project page at: http://github.com/coralnexus/coral-toolbox
-Report issues here:      http://github.com/coralnexus/coral-toolbox/issues
+See the project page at: http://github.com/adrianwebb/gem-toolbox
+Report issues here:      http://github.com/adrianwebb/gem-toolbox/issues
 "
 fi
 
