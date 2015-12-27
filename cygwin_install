@@ -9,14 +9,14 @@
 if [ -z "$HELP" ]
 then
   export HELP="
-  The cygwin_install command installs the Coral dev tools into a Cygwin environment
+  The cygwin_install command installs the Gem toolbox commands into a Cygwin environment
 
   --------------------------------------------------------------------------------
   Tested under Windows 7 / Cygwin 1.7.32
   Licensed under GPLv3
 
-  See the project page at: http://github.com/coralnexus/coral-toolbox
-  Report issues here:      http://github.com/coralnexus/coral-toolbox/issues
+  See the project page at: http://github.com/adrianwebb/gem-toolbox
+  Report issues here:      http://github.com/adrianwebb/gem-toolbox/issues
   "
 fi
 
@@ -68,7 +68,7 @@ then
 fi
 
 ARGS=`get_args "$PARAMS"`
-INSTALL_DIR="${LIB_DIR}/coral-toolbox"
+INSTALL_DIR="${LIB_DIR}/gem_toolbox"
 
 
 #-------------------------------------------------------------------------------
