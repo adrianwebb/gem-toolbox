@@ -1,7 +1,7 @@
 
 require 'optparse'
 require 'fileutils'
-require 'multi_json'
+require 'json'
 
 #-------------------------------------------------------------------------------
 # Properties
@@ -11,8 +11,8 @@ options = {}
 opts = OptionParser.new do |opts|
   opts.banner = "Usage: ./install [-tc]"
   opts.separator ""
-  opts.separator "This command installs the Coral toolbox scripts into the directory,"
-  opts.separator "/usr/local/lib/coral_toolbox (unless --test option given)."
+  opts.separator "This command installs the Gem toolbox scripts into the directory,"
+  opts.separator "/usr/local/lib/gem_toolbox (unless --test option given)."
   opts.separator ""
   opts.separator "The installer also takes care of sym linking the executables to the"
   opts.separator "/usr/local/bin directory (without the .sh extension)."
@@ -41,7 +41,7 @@ end
 
 current = File.expand_path(File.dirname(__FILE__))
 
-install_home = ( options[:test] ? current : "/usr/local/lib/coral_toolbox" )
+install_home = ( options[:test] ? current : "/usr/local/lib/gem_toolbox" )
 install_bin  = "/usr/local/bin"
 
 state_file   = "#{install_home}/.state"
@@ -91,7 +91,7 @@ puts ''
 # Remove old scripts
 
 if state
-  state = symbol_map(MultiJson.load(state))
+  state = symbol_map(JSON.parse(state))
 
   if options[:clean]
     state[:bin].each do |file|
@@ -147,4 +147,4 @@ end
 # Finalization
 
 puts "Saving state"
-File.write(state_file, MultiJson.dump(state, :pretty => true))
+File.write(state_file, JSON.pretty_generate(state))
